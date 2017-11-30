@@ -46,6 +46,8 @@ bye-flash-hello-html5 | 再见flash 你好html5
 
 - [搜狐视频](https://tv.sohu.com/)
 
+- [Acfun](http://acfun.cn)
+
 ---
 
 其他提示：

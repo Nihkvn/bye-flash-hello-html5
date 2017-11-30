@@ -15,11 +15,10 @@
 // @include     *://study.163.com/course/courseLearn*
 // @include     *://mooc.study.163.com/learn/*
 // @include     *://*.sohu.com/*html*
-// @include     *://live.bilibili.com/*
 // @include     *://*acfun.cn/v/ac*
 // @include     *://m.acfun.cn/*
 // @run-at      document-start
-// @version     1.7.6
+// @version     1.7.7
 // @grant       none
 // ==/UserScript==
 //'use strict';
@@ -58,40 +57,47 @@ function changeUA(ua) {
 })()
 
 if (isMobile) {
+  //acfun start---某些页面不要使用m.acfun.cn...
   if (location.href === 'http://m.acfun.cn/') {
-    location.href = 'http://acfun.cn/'
+    location.href = 'http://acfun.cn/' //主页
   }
 
-  if (location.search.indexOf('channel') >= 0) {
-    const num = location.search.match(/\d+/)[0]
-    location.href = 'http://acfun.cn/v/list' + num + '/index.htm'
+  if (location.href.indexOf('m.acfun.cn/list/') >= 0) {
+    //分类页
+    let listNum = null
+    if (location.hash.indexOf('channel') >= 0) {
+      listNum = location.hash.match(/\d+/)[0]
+    } else {
+      listNum = location.search.match(/\d+/)[0]
+    }
+    location.href = 'http://acfun.cn/v/list' + listNum + '/index.htm'
   }
-  //ipad2
+  //acfun end---
+
+  //Ipad2 (reserve)
   //ua ="Mozilla/5.0 (iPad; U; CPU OS 4_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8F191 Safari/6533.18.5";
 
-  //Android7 ua
+  //Android7
   ua =
     'Mozilla/5.0 (Linux; Android 7.0; PLUS Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.98 Mobile Safari/537.36'
   changeUA(ua)
 } else {
   //使用chrome、mac、safari等ua
   if (
-    (location.host === 'v.qq.com' ||
-      location.host === 'y.qq.com' ||
-      location.host === 'live.bilibil.com') &&
+    (location.host === 'v.qq.com' || location.host === 'y.qq.com') &&
     navigator.userAgent.indexOf('Edge') === -1
   ) {
-    console.log('路过') //Edge的腾讯视频、QQ音乐MV和b站直播不支持html5（不是Edge就打酱油路过吧）
+    console.log('路过') //腾讯视频和QQ音乐（MV)+非Edge略过
   } else if (location.href.indexOf('iqiyi') >= 0) {
-    console.log('路过') //非Firefox的酱油路过（若是firefox，则已经在前面进入了isMobile===true分支啦）
+    console.log('路过') //iqiyi+非Firefox略过（若是firefox，则已经在前面进入了isMobile===true分支啦）
   } else if (location.host.indexOf('le.com') >= 0) {
     //尊贵的le.com对mac+safari情有独钟……单独提出来吧
     ua =
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/603.3.8 (KHTML, like Gecko) Version/10.1.2 Safari/603.3.8'
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/604.3.5 (KHTML, like Gecko) Version/11.0 Safari/604.3.5'
     changeUA(ua)
   } else {
     ua =
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/603.3.8 (KHTML, like Gecko) Chrome/61.0.3163.91 Safari/603.3.8'
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13) AppleWebKit/604.3.5 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/604.3.5'
     changeUA(ua)
   }
 }
@@ -114,7 +120,7 @@ window.onload = function() {
     (location.href.search('study.163') >= 0 ||
       location.href.search('iqiyi.com') >= 0)
   ) {
-    let videoElement = ele('video')
+    const videoElement = ele('video')
     if (videoElement) {
       videoElement.setAttribute('controls', 'controls')
       if (location.href.search('iqiyi.com') >= 0) {
